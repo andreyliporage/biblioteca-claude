@@ -21,7 +21,7 @@ public class RentalRepositoryImpl implements RentalRepository {
 
     @Override
     public Optional<Rental> findById(Long id) {
-        return jpa.findById(id);
+        return jpa.findByIdFetch(id);
     }
 
     @Override
