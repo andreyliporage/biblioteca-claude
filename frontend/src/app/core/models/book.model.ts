@@ -8,3 +8,16 @@ export interface Book {
   isbn: string;
   status: BookStatus;
 }
+
+export interface CreateBookRequest {
+  name: string;
+  author: string;
+  isbn: string;
+}
+
+export interface UpdateBookRequest {
+  name?: string;
+  author?: string;
+  isbn?: string;
+  status?: BookStatus;
+}
