@@ -13,25 +13,20 @@ Aplicação web full-stack para gerenciamento de livros e locações, com painel
 
 ---
 
-## Pré-requisitos
+## Executar com Docker (recomendado)
 
-- Java 21+
-- Maven 3.9+
-- Node.js 20+
-- Angular CLI (`npm install -g @angular/cli`)
-
----
-
-## Executar o Backend
+**Pré-requisito:** Docker e Docker Compose instalados.
 
 ```bash
-cd backend
-mvn spring-boot:run
+docker compose up --build
 ```
 
-O servidor sobe em **http://localhost:8080**.
+| Serviço   | URL                       |
+|-----------|---------------------------|
+| Frontend  | http://localhost          |
+| Backend   | http://localhost:8080     |
 
-Na **primeira execução**, um admin é criado automaticamente e a senha aparece no console:
+Na **primeira execução**, o admin é criado automaticamente e a senha aparece nos logs do backend:
 
 ```
 =================================================
@@ -41,18 +36,42 @@ Password: <senha-gerada>
 =================================================
 ```
 
-> A senha é exibida apenas uma vez por banco de dados. Guarde-a antes de limpar o terminal.
-
-### Testes do Backend
+Para ver os logs em tempo real:
 
 ```bash
-cd backend
-mvn test
+docker compose logs -f backend
+```
+
+> O banco de dados SQLite é persistido em um volume Docker (`db_data`). A senha só aparece uma vez — guarde antes de fechar o terminal.
+
+Para parar e remover os containers:
+
+```bash
+docker compose down
+```
+
+Para apagar também o banco de dados:
+
+```bash
+docker compose down -v
 ```
 
 ---
 
-## Executar o Frontend
+## Desenvolvimento Local
+
+**Pré-requisitos:** Java 21+, Maven 3.9+, Node.js 20+, Angular CLI.
+
+### Backend
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+Sobe em **http://localhost:8080**.
+
+### Frontend
 
 ```bash
 cd frontend
@@ -60,13 +79,16 @@ npm install
 ng serve
 ```
 
-A aplicação fica disponível em **http://localhost:4200**.
+Disponível em **http://localhost:4200**. O Angular CLI já está configurado com proxy para repassar chamadas `/api` ao backend local.
 
-### Testes do Frontend
+### Testes
 
 ```bash
-cd frontend
-ng test --watch=false
+# Backend (JUnit 5 + Mockito + JaCoCo)
+cd backend && mvn test
+
+# Frontend (Vitest)
+cd frontend && ng test --watch=false
 ```
 
 ---
