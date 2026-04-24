@@ -1,0 +1,63 @@
+<div class="form-header">
+  <h2 class="form-title">{{ isEdit ? 'Editar Livro' : 'Novo Livro' }}</h2>
+  <button mat-icon-button type="button" (click)="cancel()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="form-body">
+  <mat-form-field appearance="outline">
+    <mat-label>Nome</mat-label>
+    <input matInput formControlName="name" />
+    @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
+      <mat-error>Campo obrigatório</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Autor</mat-label>
+    <input matInput formControlName="author" />
+    @if (form.get('author')?.hasError('required') && form.get('author')?.touched) {
+      <mat-error>Campo obrigatório</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>ISBN</mat-label>
+    <input matInput formControlName="isbn" placeholder="10 ou 13 dígitos" />
+    @if (form.get('isbn')?.hasError('required') && form.get('isbn')?.touched) {
+      <mat-error>Campo obrigatório</mat-error>
+    }
+    @if (form.get('isbn')?.hasError('pattern') && form.get('isbn')?.touched) {
+      <mat-error>ISBN deve ter 10 ou 13 dígitos numéricos</mat-error>
+    }
+  </mat-form-field>
+
+  @if (isEdit) {
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        @for (s of statuses; track s.value) {
+          <mat-option [value]="s.value">{{ s.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+
+  @if (error()) {
+    <p class="error-message">{{ error() }}</p>
+  }
+
+  <div class="form-actions">
+    <button mat-stroked-button type="button" (click)="cancel()" [disabled]="loading()">
+      Cancelar
+    </button>
+    <button mat-flat-button type="submit" [disabled]="loading()">
+      @if (loading()) {
+        <mat-spinner diameter="20" />
+      } @else {
+        {{ isEdit ? 'Salvar' : 'Cadastrar' }}
+      }
+    </button>
+  </div>
+</form>
