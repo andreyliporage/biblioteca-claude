@@ -1,0 +1,18 @@
+<mat-toolbar color="primary" class="toolbar">
+  <mat-icon>local_library</mat-icon>
+  <span class="app-title">Biblioteca</span>
+  <nav class="nav-links">
+    <a mat-button routerLink="/books" routerLinkActive="active-nav-link">
+      <mat-icon>menu_book</mat-icon>
+      Livros
+    </a>
+  </nav>
+  <span class="spacer"></span>
+  <button mat-icon-button matTooltip="Sair" (click)="logout()">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="page-content">
+  <router-outlet />
+</div>

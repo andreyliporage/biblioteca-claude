@@ -1,0 +1,38 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.toolbar {
+  flex-shrink: 0;
+  gap: 8px;
+  z-index: 100;
+}
+
+.app-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.nav-links {
+  display: flex;
+  margin-left: 16px;
+  gap: 4px;
+}
+
+.active-nav-link {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.page-content {
+  flex: 1;
+  overflow: hidden;
+}
