@@ -1,0 +1,120 @@
+<h2 mat-dialog-title>Locar Livro</h2>
+
+<mat-dialog-content class="content">
+  <div class="book-summary">
+    <span class="book-summary__code">{{ book.code }}</span>
+    <span class="book-summary__title">{{ book.name }}</span>
+    <span class="book-summary__author">{{ book.author }}</span>
+  </div>
+
+  <section class="section">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Buscar cliente</mat-label>
+      <input
+        matInput
+        [formControl]="clientSearch"
+        [matAutocomplete]="clientAuto"
+        placeholder="Digite o nome do cliente..."
+      />
+      @if (searchingClients()) {
+        <mat-spinner matSuffix diameter="18" />
+      }
+      @if (selectedClient()) {
+        <mat-icon matSuffix class="check-icon">check_circle</mat-icon>
+      }
+      @if (clientSearch.touched && !selectedClient()) {
+        <mat-error>Selecione um cliente da lista</mat-error>
+      }
+      <mat-autocomplete
+        #clientAuto
+        [displayWith]="displayClient"
+        (optionSelected)="onClientSelected($event.option.value)"
+      >
+        @for (client of filteredClients(); track client.id) {
+          <mat-option [value]="client">{{ client.name }} — {{ client.email }}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <button mat-button type="button" class="toggle-btn" (click)="toggleNewClientForm()">
+      <mat-icon>{{ showNewClientForm() ? 'remove' : 'person_add' }}</mat-icon>
+      {{ showNewClientForm() ? 'Cancelar cadastro' : 'Cadastrar novo cliente' }}
+    </button>
+
+    @if (showNewClientForm()) {
+      <div class="new-client-section" [formGroup]="newClientForm">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nome</mat-label>
+          <input matInput formControlName="name" />
+          @if (newClientForm.get('name')?.hasError('required') && newClientForm.get('name')?.touched) {
+            <mat-error>Campo obrigatório</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>E-mail</mat-label>
+          <input matInput formControlName="email" type="email" />
+          @if (newClientForm.get('email')?.hasError('required') && newClientForm.get('email')?.touched) {
+            <mat-error>Campo obrigatório</mat-error>
+          }
+          @if (newClientForm.get('email')?.hasError('email') && newClientForm.get('email')?.touched) {
+            <mat-error>E-mail inválido</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Telefone (opcional)</mat-label>
+          <input matInput formControlName="phone" />
+        </mat-form-field>
+        @if (clientError()) {
+          <p class="error-message">{{ clientError() }}</p>
+        }
+        <div class="save-client-row">
+          <button mat-flat-button type="button" (click)="saveNewClient()" [disabled]="savingClient()">
+            @if (savingClient()) {
+              <mat-spinner diameter="20" />
+            } @else {
+              Salvar Cliente
+            }
+          </button>
+        </div>
+      </div>
+    }
+  </section>
+
+  <section class="section" [formGroup]="rentalForm">
+    <div class="date-row">
+      <mat-form-field appearance="outline" class="date-field">
+        <mat-label>Data de início</mat-label>
+        <input matInput [matDatepicker]="startPicker" formControlName="startDate" [min]="today" />
+        <mat-datepicker-toggle matIconSuffix [for]="startPicker" />
+        <mat-datepicker #startPicker />
+        @if (rentalForm.get('startDate')?.hasError('required') && rentalForm.get('startDate')?.touched) {
+          <mat-error>Campo obrigatório</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="date-field">
+        <mat-label>Data de devolução</mat-label>
+        <input matInput [matDatepicker]="endPicker" formControlName="endDate" [min]="minEndDate" />
+        <mat-datepicker-toggle matIconSuffix [for]="endPicker" />
+        <mat-datepicker #endPicker />
+        @if (rentalForm.get('endDate')?.hasError('required') && rentalForm.get('endDate')?.touched) {
+          <mat-error>Campo obrigatório</mat-error>
+        }
+        @if (rentalForm.hasError('minRentalDuration') && rentalForm.get('endDate')?.touched) {
+          <mat-error>Período mínimo de 5 dias</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </section>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close [disabled]="loading()">Cancelar</button>
+  <button mat-flat-button (click)="submit()" [disabled]="loading()">
+    @if (loading()) {
+      <mat-spinner diameter="20" />
+    } @else {
+      Confirmar Locação
+    }
+  </button>
+</mat-dialog-actions>
