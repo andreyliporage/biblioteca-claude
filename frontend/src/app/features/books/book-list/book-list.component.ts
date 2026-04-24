@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -12,7 +13,9 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Book, BookStatus } from '../../../core/models/book.model';
+import { Rental } from '../../../core/models/rental.model';
 import { BookService } from '../../../core/services/book.service';
+import { RentalDialogComponent, RentalDialogData } from '../../rentals/rental-dialog/rental-dialog.component';
 import { BookFormComponent } from '../book-form/book-form.component';
 
 interface BookFilter {
@@ -35,6 +38,7 @@ interface BookFilter {
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
+    MatDialogModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
     BookFormComponent,
@@ -44,6 +48,7 @@ interface BookFilter {
 })
 export class BookListComponent implements OnInit, AfterViewInit {
   private readonly bookService = inject(BookService);
+  private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
 
@@ -135,7 +140,19 @@ export class BookListComponent implements OnInit, AfterViewInit {
   }
 
   protected onRent(book: Book): void {
-    // Fase 5: abrir modal de locação
+    const dialogRef = this.dialog.open(RentalDialogComponent, {
+      width: '560px',
+      data: { book } satisfies RentalDialogData,
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((rental: Rental | undefined) => {
+      if (rental) {
+        this.dataSource.data = this.dataSource.data.map(b =>
+          b.id === book.id ? { ...b, status: 'RENTED' as BookStatus } : b,
+        );
+        this.snackBar.open(`"${book.name}" locado com sucesso!`, 'OK', { duration: 3000 });
+      }
+    });
   }
 
   protected clearFilters(): void {

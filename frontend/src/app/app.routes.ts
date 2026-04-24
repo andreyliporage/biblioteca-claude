@@ -20,6 +20,13 @@ export const routes: Routes = [
             m => m.BookListComponent,
           ),
       },
+      {
+        path: 'rentals',
+        loadComponent: () =>
+          import('./features/rentals/rental-list/rental-list.component').then(
+            m => m.RentalListComponent,
+          ),
+      },
       { path: '', redirectTo: 'books', pathMatch: 'full' },
     ],
   },

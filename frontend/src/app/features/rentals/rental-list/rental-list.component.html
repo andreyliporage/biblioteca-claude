@@ -1,0 +1,140 @@
+<div class="page-container">
+  <h1 class="page-title">Locações</h1>
+
+  <mat-tab-group class="tab-group">
+    <mat-tab label="Ativas">
+      <div class="tab-content">
+        <div class="table-wrapper">
+          @if (loadingActive()) {
+            <div class="loading-overlay"><mat-spinner diameter="48" /></div>
+          }
+
+          <table mat-table [dataSource]="activeDataSource" class="table">
+            <ng-container matColumnDef="bookCode">
+              <th mat-header-cell *matHeaderCellDef>Código</th>
+              <td mat-cell *matCellDef="let row">{{ row.bookCode }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="bookName">
+              <th mat-header-cell *matHeaderCellDef>Livro</th>
+              <td mat-cell *matCellDef="let row">{{ row.bookName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="clientName">
+              <th mat-header-cell *matHeaderCellDef>Cliente</th>
+              <td mat-cell *matCellDef="let row">{{ row.clientName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="startDate">
+              <th mat-header-cell *matHeaderCellDef>Início</th>
+              <td mat-cell *matCellDef="let row">{{ row.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="endDate">
+              <th mat-header-cell *matHeaderCellDef>Devolução prevista</th>
+              <td mat-cell *matCellDef="let row">{{ row.endDate | date:'dd/MM/yyyy':'UTC' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row">
+                @if (returningId() === row.id) {
+                  <button mat-stroked-button disabled>
+                    <mat-spinner diameter="18" />
+                  </button>
+                } @else {
+                  <button mat-stroked-button (click)="returnBook(row)" matTooltip="Registrar devolução">
+                    <mat-icon>assignment_return</mat-icon>
+                    Devolver
+                  </button>
+                }
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="activeColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: activeColumns;"></tr>
+          </table>
+
+          @if (!loadingActive() && activeDataSource.data.length === 0) {
+            <div class="empty-state">
+              <mat-icon class="empty-icon">check_circle</mat-icon>
+              <p>Nenhuma locação ativa.</p>
+            </div>
+          }
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Histórico">
+      <div class="tab-content">
+        <form [formGroup]="historyFilterForm" class="filter-row">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Livro (nome ou código)</mat-label>
+            <input matInput formControlName="book" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Cliente</mat-label>
+            <input matInput formControlName="client" />
+          </mat-form-field>
+          <button mat-icon-button type="button" (click)="clearHistoryFilters()" matTooltip="Limpar filtros">
+            <mat-icon>filter_list_off</mat-icon>
+          </button>
+        </form>
+
+        <div class="table-wrapper">
+          @if (loadingHistory()) {
+            <div class="loading-overlay"><mat-spinner diameter="48" /></div>
+          }
+
+          <table mat-table [dataSource]="historyDataSource" class="table">
+            <ng-container matColumnDef="bookCode">
+              <th mat-header-cell *matHeaderCellDef>Código</th>
+              <td mat-cell *matCellDef="let row">{{ row.bookCode }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="bookName">
+              <th mat-header-cell *matHeaderCellDef>Livro</th>
+              <td mat-cell *matCellDef="let row">{{ row.bookName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="clientName">
+              <th mat-header-cell *matHeaderCellDef>Cliente</th>
+              <td mat-cell *matCellDef="let row">{{ row.clientName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="startDate">
+              <th mat-header-cell *matHeaderCellDef>Início</th>
+              <td mat-cell *matCellDef="let row">{{ row.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="endDate">
+              <th mat-header-cell *matHeaderCellDef>Devolução prevista</th>
+              <td mat-cell *matCellDef="let row">{{ row.endDate | date:'dd/MM/yyyy':'UTC' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="returnedAt">
+              <th mat-header-cell *matHeaderCellDef>Devolvido em</th>
+              <td mat-cell *matCellDef="let row">
+                {{ row.returnedAt ? (row.returnedAt | date:'dd/MM/yyyy':'UTC') : '—' }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="historyColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: historyColumns;"></tr>
+          </table>
+
+          @if (!loadingHistory() && historyDataSource.filteredData.length === 0) {
+            <div class="empty-state">
+              <mat-icon class="empty-icon">history</mat-icon>
+              @if (historyDataSource.data.length === 0) {
+                <p>Nenhuma locação no histórico.</p>
+              } @else {
+                <p>Nenhuma locação encontrada com os filtros aplicados.</p>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
