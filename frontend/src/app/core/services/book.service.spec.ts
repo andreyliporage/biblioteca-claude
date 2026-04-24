@@ -4,7 +4,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { BookService } from './book.service';
 import { Book } from '../models/book.model';
 
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = '/api';
 
 const mockBook: Book = {
   id: 1,

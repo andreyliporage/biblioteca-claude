@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Book, CreateBookRequest, UpdateBookRequest } from '../models/book.model';
 
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = '/api';
 
 @Injectable({ providedIn: 'root' })
 export class BookService {

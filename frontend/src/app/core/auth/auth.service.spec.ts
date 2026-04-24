@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
 const TOKEN_KEY = 'biblioteca_token';
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = '/api';
 
 describe('AuthService', () => {
   let service: AuthService;

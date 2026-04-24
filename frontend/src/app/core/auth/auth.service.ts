@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 
 const TOKEN_KEY = 'biblioteca_token';
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = '/api';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

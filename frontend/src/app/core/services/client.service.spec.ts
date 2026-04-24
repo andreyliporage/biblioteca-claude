@@ -4,7 +4,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ClientService } from './client.service';
 import { Client } from '../models/client.model';
 
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = '/api';
 
 const mockClient: Client = {
   id: 1,
