@@ -10,3 +10,10 @@ export interface Rental {
   returnedAt: string | null;
   active: boolean;
 }
+
+export interface CreateRentalRequest {
+  bookId: number;
+  clientId: number;
+  startDate: string;
+  endDate: string;
+}
