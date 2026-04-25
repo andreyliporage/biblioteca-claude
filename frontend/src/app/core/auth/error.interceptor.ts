@@ -12,6 +12,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         auth.logout();
+      } else if (error.status === 400) {
+        const message = error.error?.error ?? 'Requisição inválida.';
+        snackBar.open(message, 'OK', { duration: 5000 });
       } else if (error.status === 0) {
         snackBar.open('Sem conexão com o servidor.', 'OK', { duration: 5000 });
       } else if (error.status >= 500) {

@@ -53,10 +53,17 @@ describe('errorInterceptor', () => {
     );
   });
 
-  it('should not show snackbar or logout on 400', () => {
+  it('should show api error message on 400', () => {
     http.get('/test').subscribe({ error: () => {} });
-    httpMock.expectOne('/test').flush({}, { status: 400, statusText: 'Bad Request' });
-    expect(snackBarOpen).not.toHaveBeenCalled();
-    expect(authLogout).not.toHaveBeenCalled();
+    httpMock
+      .expectOne('/test')
+      .flush({ error: 'ISBN inválido.' }, { status: 400, statusText: 'Bad Request' });
+    expect(snackBarOpen).toHaveBeenCalledWith('ISBN inválido.', 'OK', { duration: 5000 });
+  });
+
+  it('should show fallback message on 400 without error body', () => {
+    http.get('/test').subscribe({ error: () => {} });
+    httpMock.expectOne('/test').flush(null, { status: 400, statusText: 'Bad Request' });
+    expect(snackBarOpen).toHaveBeenCalledWith('Requisição inválida.', 'OK', { duration: 5000 });
   });
 });
